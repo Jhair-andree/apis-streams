@@ -1,0 +1,25 @@
+pipeline {
+    agent {
+        label('terraform')
+    }
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws-credentials')
+    }
+    triggers {
+        cron('*/10 * * * *')
+    } 
+    options { 
+        disableConcurrentBuilds()
+        timeout(time: 3, unit: 'MINUTES')
+        timestamps()
+    }
+    stages {
+        stage('Check storage size') {
+            steps {
+                dir('check_storage_size') {
+                    sh 'sh script_check.sh'
+                }
+            }
+        }            
+    }
+}
