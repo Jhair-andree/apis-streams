@@ -1,0 +1,47 @@
+name: S3 bucket creation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+    - name: terraform version
+      run: terraform --version
+      working-directory: ./terraform-app
+    - name: init
+      run: terraform init
+      working-directory: ./terraform-app
+    - name: plan
+      run: terraform plan
+      working-directory: ./terraform-app
+    - name: apply
+      run: terraform apply -auto-approve
+      working-directory: ./terraform-app
+    - name: check storage size
+      run: sh "script_check.sh"
+      working-directory: ./check_storage_size
+    - name: dockerize
+      run: cd agents &&  docker build -t carlosfeufernandez/terraform-app-carlosfeu:latest -f tf.Dockerfile .
+    - name: Docker hub authentication
+      run: docker login -u=${{ secrets.DOCKER_HUB_USERNAME }} -p=${{ secrets.DOCKER_HUB_PASSWORD }}
+    - name: Push
+      run: docker push carlosfeufernandez/terraform-app-carlosfeu:latest
+    - name: Integration test
+      run: docker run -d carlosfeufernandez/terraform-app-carlosfeu:latest
+   
