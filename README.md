@@ -1,4 +1,4 @@
-[![S3 bucket creation](https://github.com/KeepCodingCloudDevops6/cicd-carlosfeu/actions/workflows/terraform.yml/badge.svg)](https://github.com/KeepCodingCloudDevops6/cicd-carlosfeu/actions/workflows/terraform.yml)
+[![S3 bucket creation](https://github.com/carlosfeufernandez/cicd-carlosfeu/actions/workflows/terraform.yml/badge.svg)](https://github.com/carlosfeufernandez/cicd-carlosfeu/actions/workflows/terraform.yml)
 
 # cicd-carlosfeu
 Proyecto de CI/CD Carlos Feu
